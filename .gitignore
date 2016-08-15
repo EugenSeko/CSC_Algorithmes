@@ -187,3 +187,8 @@ FakesAssemblies/
 GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
+/stepic.sln
+/stepic/stepic.csproj
+/stepic/Class1.cs
+/stepic/App.config
+/stepic/Properties/AssemblyInfo.cs
