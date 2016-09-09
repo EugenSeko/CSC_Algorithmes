@@ -8,11 +8,19 @@ using System.Diagnostics;
 
 
 /*
- Первая строка содержит число  1≤n≤10^4, вторая — n натуральных чисел,
- не превышающих 10. 
- Выведите упорядоченную по неубыванию последовательность этих чисел.
- */
+Задача на программирование: наибольшая последовательнократная подпоследовательность
 
+Дано целое число 1≤n≤10^3 и массив A[1…n] натуральных чисел, не превосходящих
+2⋅10^9. Выведите максимальное 1≤k≤n, для которого найдётся подпоследовательность
+1≤i1<i2<…<ik≤n длины k, в которой каждый элемент делится на предыдущий 
+(формально: для  всех 1≤j<k, A[ij]|A[ij+1] ).
+
+Sample Input:
+4
+3 6 7 12
+Sample Output:
+3
+ */
 namespace stepic
 {
     public class MainClass
@@ -21,46 +29,41 @@ namespace stepic
         public static void Main(String[] args)
         {
 
-             int n =Convert.ToInt32(Console.ReadLine());
-             string s = Console.ReadLine();
-
-             int[] A = new int[n];
-
-             string[] S = s.Split(' ');
-             for (int i = 0; i < n; i++)
-             {
-                 A[i] = Convert.ToInt32(S[i]);
-             } 
-
-            A = CountSort(A);
+            int n = Convert.ToInt32(Console.ReadLine());
+            string[] s = Console.ReadLine().Split(' ');
+            int[] A = new int[n];
             for (int i = 0; i < n; i++)
             {
-                Console.Write(A[i] + " ");
+                A[i]=Convert.ToInt32(s[i]);
             }
-            
-           
+
+            int[] D=new int[n];
+            int max=-1;
+            int index = -1;
+
+            for (int i = 0; i < n; i++)
+            {
+                D[i] = 1;
+                for (int j = 0; j < i; j++)
+                {
+                    if (A[i] % A[j] == 0 && D[j]>=D[i])
+                    {
+                        D[i]++;
+                    }
+                }
+            }
+            for (int i = 0; i < n; i++)
+            {
+                if (D[i] > max)
+                {
+                    max = D[i];
+                    index = i;
+                }
+            }
+            Console.WriteLine(max);
+           // Console.WriteLine(index);
 
             Console.ReadKey();
-        }
-        public static int[] CountSort(int[] A)
-        {
-            int[] B = new int[10];
-            int[] Asort = new int[A.Length];
-
-            for (int i = 0; i < A.Length; i++)
-            {
-                B[A[i]]++;
-            }
-            for (int i = 1; i < B.Length; i++)
-            {
-                B[i] = B[i] + B[i - 1];
-            }
-            for (int i = A.Length-1; i > -1; i--)
-            {
-                Asort[B[A[i]]-1] = A[i];
-                B[A[i]] -= 1; 
-            }
-            return Asort;
         }
 
     }
