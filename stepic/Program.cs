@@ -8,63 +8,105 @@ using System.Diagnostics;
 
 
 /*
-Задача на программирование: наибольшая последовательнократная подпоследовательность
+Задача на программирование повышенной сложности: наибольшая 
+невозрастающая подпоследовательность
 
-Дано целое число 1≤n≤10^3 и массив A[1…n] натуральных чисел, не превосходящих
-2⋅10^9. Выведите максимальное 1≤k≤n, для которого найдётся подпоследовательность
-1≤i1<i2<…<ik≤n длины k, в которой каждый элемент делится на предыдущий 
-(формально: для  всех 1≤j<k, A[ij]|A[ij+1] ).
+Дано целое число 1≤n≤10^5 и массив A[1…n], содержащий
+неотрицательные целые числа, не превосходящие 10^9. Найдите 
+наибольшую невозрастающую подпоследовательность в A. В первой
+строке выведите её длину k, во второй — её индексы
+1≤i1<i2<…<ik≤n (таким образом, A[i1]≥A[i2]≥…≥A[in]).
 
 Sample Input:
-4
-3 6 7 12
+5
+5 3 4 4 2
 Sample Output:
-3
+4
+1 3 4 5 
  */
 namespace stepic
 {
     public class MainClass
     {
-       
+
         public static void Main(String[] args)
         {
-
+            // input
             int n = Convert.ToInt32(Console.ReadLine());
             string[] s = Console.ReadLine().Split(' ');
             int[] A = new int[n];
+            int[] Out;
+
             for (int i = 0; i < n; i++)
             {
-                A[i]=Convert.ToInt32(s[i]);
+                A[i] = Convert.ToInt32(s[i]);
             }
-
-            int[] D=new int[n];
-            int max=-1;
+            // prog
+            int[] D = new int[n + 1];
+            int[] I = new int[n];
+            int max = -1;
             int index = -1;
-
+            D[0] = Int32.MaxValue;
+            for (int i = 1; i < D.Length; i++)
+            {
+                D[i] = -1;
+            }
             for (int i = 0; i < n; i++)
             {
-                D[i] = 1;
-                for (int j = 0; j < i; j++)
+                int j = DownBound(D, A[i]);
+                if (A[i] > D[j] && A[i] <= D[j - 1])
                 {
-                    if (A[i] % A[j] == 0 && D[j]>=D[i])
+                    D[j] = A[i];
+                    I[i] = j;
+                    if (j > max)
                     {
-                        D[i]++;
+                        max = j;
+                        index = i;
                     }
                 }
             }
-            for (int i = 0; i < n; i++)
+            // output
+            int[] _out = new int[index];
+            for (int i = 0; i < _out.Length; i++)
             {
-                if (D[i] > max)
+                _out[i] = -1;
+            }
+            int ind = 0;
+            _out[ind] = index;
+            for (int i = index; i > -1; i--)
+            {
+                if (I[index] - I[i] == 1 && A[index] <= A[i])
                 {
-                    max = D[i];
+                    _out[++ind] = i;
                     index = i;
                 }
             }
-            Console.WriteLine(max);
-           // Console.WriteLine(index);
-
+            Console.WriteLine((max + 1));
+            for (int i = _out.Length - 1; i >= 0; i--)
+            {
+                if (_out[i] != -1) Console.Write((_out[i] + 1) + " ");
+            }
             Console.ReadKey();
         }
 
+        static int DownBound(int[] A, int a)
+        {
+            int l = 0;
+            int r = A.Length - 1;
+
+            while (l != r)
+            {
+                int m = l + ((r - l) / 2);
+                if (a > A[m])
+                {
+                    r = m;
+                }
+                if (a <= A[m])
+                {
+                    l = m + 1;
+                }
+            }
+            return l;
+        }
     }
 }
